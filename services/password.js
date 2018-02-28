@@ -28,22 +28,19 @@ passport.use(
       callbackURL: '/auth/google/callback',
       proxy: true
     },
-    (accessToken, refreshToken, profile, done) => {
+    async (accessToken, refreshToken, profile, done) => {
       // find the first record that has the particular google id
       // in js, we can not create a const variable to store the users
       // because it is aynchronous request, therefore, we use promise in ES6
       // that means, after we get the return value, "then" we do sth
-      User.findOne({ googleId: profile.id }).then(existingUser => {
-        if (existingUser) {
-          // the user already exist
-          done(null, existingUser);
-        } else {
-          // if not exist, we will store the google user id into the mongoDB
-          new User({ googleId: profile.id }).save().then(user => {
-            done(null, user);
-          });
-        }
-      });
+      const existingUser = await User.findOne({ googleId: profile.id });
+
+      if (existingUser) {
+        return done(null, existingUser);
+      }
+
+      const user = await new User({ googleId: profile.id }).save();
+      done(null, user);
     }
   )
 );
