@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
+const bodyParser = require('body-parser');
 const keys = require('./config/keys');
 // connect to the remote mongoDB
 mongoose.connect(keys.mongoURI);
@@ -14,6 +15,8 @@ require('./services/password');
 //const authRoutes = require('./routes/authRoutes'); this method can be simplified
 const app = express();
 
+// use the body bodyParser
+app.use(bodyParser.json());
 // tell the passport module to use the cookie-session
 app.use(
   cookieSession({
@@ -28,6 +31,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 require('./routes/authRoutes')(app);
+require('./routes/billingRoutes')(app);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT);

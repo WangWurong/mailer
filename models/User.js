@@ -8,7 +8,8 @@ const { Schema } = mongoose;
 
 // Schema is used for describing the structure of the user model
 const userSchema = new Schema({
-  googleId: String
+  googleId: String,
+  credits: { type: Number, default: 0 }
 });
 // create the user model using this Schema, load this in mongoDB
 mongoose.model('users', userSchema);
